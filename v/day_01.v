@@ -15,6 +15,7 @@ fn main() {
 		part1 += p1
 		part2 += p2
 	}
+
 	println('part 1: $part1')
 	println('part 2: $part2')
 }

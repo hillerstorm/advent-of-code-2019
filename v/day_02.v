@@ -12,10 +12,8 @@ fn main() {
 			mut reg := ints.clone()
 			reg[1] = x
 			reg[2] = y
-			mut pos := 0
-			for {
-				val := reg[pos]
-				match val {
+			for pos := 0; pos < reg.len; pos += 4 {
+				match reg[pos] {
 					1 {
 						reg[reg[pos + 3]] = reg[reg[pos + 1]] + reg[reg[pos + 2]]
 					}
@@ -30,12 +28,7 @@ fn main() {
 						}
 						break
 					}
-					else {
-						println('invalid opcode $val at pos $pos')
-						return
-					}
 				}
-				pos += 4
 			}
 		}
 	}
