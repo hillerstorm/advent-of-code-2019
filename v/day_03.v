@@ -14,10 +14,7 @@ struct Data {
 }
 
 fn main() {
-	input := os.read_lines('../inputs/20191203.txt') or {
-		println('input not found')
-		return
-	}
+	input := os.read_lines('../inputs/20191203.txt')?
 
 	first_coords := get_coords(input[0].split(','))
 	second_coords := get_coords(input[1].split(','))

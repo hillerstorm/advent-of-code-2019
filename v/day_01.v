@@ -4,10 +4,8 @@ import (
 )
 
 fn main() {
-	input := os.read_lines('../inputs/20191201.txt') or {
-		println('input not found')
-		return
-	}
+	input := os.read_lines('../inputs/20191201.txt')?
+
 	mut part1 := 0
 	mut part2 := 0
 	for line in input {

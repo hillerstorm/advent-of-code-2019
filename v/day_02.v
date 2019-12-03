@@ -1,10 +1,8 @@
 import os
 
 fn main() {
-	input := os.read_file('../inputs/20191202.txt') or {
-		println('input not found')
-		return
-	}
+	input := os.read_file('../inputs/20191202.txt')?
+
 	split := input.trim_space().split(',')
 	ints := split.map(it.int())
 	for x := 0; x < 100; x++ {
