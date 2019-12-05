@@ -1,32 +1,23 @@
-import os
+import (
+	os
+	helpers
+	intcode
+)
 
 fn main() {
 	input := os.read_file('../inputs/20191202.txt')?
+	mut parsed := helpers.split_to_ints(input, ',')
 
-	split := input.trim_space().split(',')
-	ints := split.map(it.int())
-	for x := 0; x < 100; x++ {
-		for y := 0; y < 100; y++ {
-			mut reg := ints.clone()
-			reg[1] = x
-			reg[2] = y
-			for pos := 0; pos < reg.len; pos += 4 {
-				match reg[pos] {
-					1 {
-						reg[reg[pos + 3]] = reg[reg[pos + 1]] + reg[reg[pos + 2]]
-					}
-					2 {
-						reg[reg[pos + 3]] = reg[reg[pos + 1]] * reg[reg[pos + 2]]
-					}
-					99 {
-						if x == 12 && y == 2 {
-							println('part1: ${reg[0]}')
-						} else if reg[0] == 19690720 {
-							println('part2: ${100 * x + y}')
-						}
-						break
-					}
-				}
+	for noun := 0; noun < 100; noun++ {
+		for verb := 0; verb < 100; verb++ {
+			parsed[1] = noun
+			parsed[2] = verb
+			result := intcode.run(parsed, [])
+
+			if noun == 12 && verb == 2 {
+				println('part 1: $result')
+			} else if result == 19690720 {
+				println('part 2: ${100 * noun + verb}')
 			}
 		}
 	}

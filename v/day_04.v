@@ -1,10 +1,14 @@
-import os
+import (
+	os
+	helpers
+)
 
 fn main() {
 	input := os.read_file('../inputs/20191204.txt')?
-	split := input.trim_space().split('-')
-	min := split[0].int()
-	max := split[1].int()
+	parsed := helpers.split_to_ints(input, '-')
+
+	min := parsed[0]
+	max := parsed[1]
 	mut p1 := 0
 	mut p2 := 0
 	for i := min; i <= max; i++ {
