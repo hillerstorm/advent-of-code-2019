@@ -12,11 +12,15 @@ fn main() {
 		for verb := 0; verb < 100; verb++ {
 			parsed[1] = noun
 			parsed[2] = verb
-			result := intcode.run(parsed, [])
+
+			mut vm := &intcode.Program {
+				memory: parsed.clone()
+			}
+			vm.run()
 
 			if noun == 12 && verb == 2 {
-				println('part 1: $result')
-			} else if result == 19690720 {
+				println('part 1: $vm.result')
+			} else if vm.result == 19690720 {
 				println('part 2: ${100 * noun + verb}')
 			}
 		}
