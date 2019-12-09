@@ -6,6 +6,12 @@ pub fn split_to_ints(input string, separator string) []int {
 	return ints
 }
 
+pub fn split_to_i64s(input string, separator string) []i64 {
+	split := input.trim_space().split(separator)
+	ints := split.map(it.i64())
+	return ints
+}
+
 pub fn permutations(values []int) [][]int {
 	if values.len == 0 {
 		return [values]

@@ -2,13 +2,14 @@ module intcode
 
 pub struct Program {
 pub mut:
-	memory []int
+	memory []i64
 	done bool = false
-	result int = 0
-	outputs []int = []int
+	result i64 = i64(0)
+	outputs []i64 = []i64
 	input_idx int = 0
 	input_source &Program
-	pos int = 0
+	pos i64 = i64(0)
+	relative_base i64 = i64(0)
 }
 
 pub fn (program mut Program) run() {
@@ -27,13 +28,13 @@ pub fn (program mut Program) run() {
 		match val[3..] {
 			'01' {
 				first, second := program.get_two_params(param_modes)
-				program.memory[program.memory[program.pos + 3]] = first + second
+				program.write(param_modes, 3, first + second)
 
 				program.pos += 4
 			}
 			'02' {
 				first, second := program.get_two_params(param_modes)
-				program.memory[program.memory[program.pos + 3]] = first * second
+				program.write(param_modes, 3, first * second)
 
 				program.pos += 4
 			}
@@ -42,7 +43,7 @@ pub fn (program mut Program) run() {
 					return
 				}
 
-				program.memory[program.memory[program.pos + 1]] = program.input_source.outputs[program.input_idx++]
+				program.write(param_modes, 1, program.input_source.outputs[program.input_idx++])
 
 				program.pos += 2
 			}
@@ -72,23 +73,29 @@ pub fn (program mut Program) run() {
 			}
 			'07' {
 				first, second := program.get_two_params(param_modes)
-				program.memory[program.memory[program.pos + 3]] = if first < second {
+				program.write(param_modes, 3, if first < second {
 					1
 				} else {
 					0
-				}
+				})
 
 				program.pos += 4
 			}
 			'08' {
 				first, second := program.get_two_params(param_modes)
-				program.memory[program.memory[program.pos + 3]] = if first == second {
+				program.write(param_modes, 3, if first == second {
 					1
 				} else {
 					0
-				}
+				})
 
 				program.pos += 4
+			}
+			'09' {
+				param := program.get_param(param_modes)
+				program.relative_base += param
+
+				program.pos += 2
 			}
 			'99' {
 				program.done = true
@@ -103,24 +110,43 @@ pub fn (program mut Program) run() {
 	}
 }
 
-fn (program &Program) get_param(param_modes []int) int {
+fn (program mut Program) write(param_modes []int, param_offset int, value i64) {
+	idx := match param_modes[param_offset - 1] {
+		2 {
+			program.relative_base + program.memory[program.pos + param_offset]
+		} else {
+			program.memory[program.pos + param_offset]
+		}
+	}
+
+	for idx >= i64(program.memory.len) {
+		program.memory << i64(0)
+	}
+
+	program.memory[idx] = value
+}
+
+fn (program &Program) get_param(param_modes []int) i64 {
 	return program.get_param_with_offset(param_modes, 0)
 }
 
-fn (program &Program) get_param_with_offset(param_modes []int, offset int) int {
+fn (program &Program) get_param_with_offset(param_modes []int, offset int) i64 {
 	return match param_modes[offset] {
 		1 {
-			 program.memory[program.pos + offset + 1]
+			program.memory[program.pos + offset + 1]
+		}
+		2 {
+			program.memory[program.relative_base + program.memory[program.pos + offset + 1]]
 		} else {
-			 program.memory[program.memory[program.pos + offset + 1]]
+			program.memory[program.memory[program.pos + offset + 1]]
 		}
 	}
 }
 
-fn (program &Program) get_two_params(param_modes []int) (int, int) {
+fn (program &Program) get_two_params(param_modes []int) (i64, i64) {
 	return program.get_param(param_modes), program.get_param_with_offset(param_modes, 1)
 }
 
-fn (program &Program) get_three_params(param_modes []int) (int, int, int) {
+fn (program &Program) get_three_params(param_modes []int) (i64, i64, i64) {
 	return program.get_param(param_modes), program.get_param_with_offset(param_modes, 1), program.get_param_with_offset(param_modes, 2)
 }

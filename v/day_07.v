@@ -6,7 +6,7 @@ import (
 
 fn main() {
 	input := os.read_file('../inputs/20191207.txt')?
-	parsed := helpers.split_to_ints(input, ',')
+	parsed := helpers.split_to_i64s(input, ',')
 
 	part1 := run(parsed, [0, 1, 2, 3, 4])
 	println('part 1: $part1')
@@ -14,10 +14,11 @@ fn main() {
 	println('part 2: $part2')
 }
 
-fn run(input, settings []int) int {
-	mut max := 0
+fn run(input []i64, settings []int) i64 {
+	mut max := i64(0)
 
-	for perm in helpers.permutations(settings) {
+	for p in helpers.permutations(settings) {
+		perm := p.map(i64(it))
 		mut vm1 := &intcode.Program {
 			memory: input.clone()
 			input_source: &intcode.Program{outputs:[perm[0], 0]}

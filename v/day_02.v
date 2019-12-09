@@ -6,7 +6,7 @@ import (
 
 fn main() {
 	input := os.read_file('../inputs/20191202.txt')?
-	mut parsed := helpers.split_to_ints(input, ',')
+	mut parsed := helpers.split_to_i64s(input, ',')
 
 	for noun := 0; noun < 100; noun++ {
 		for verb := 0; verb < 100; verb++ {
