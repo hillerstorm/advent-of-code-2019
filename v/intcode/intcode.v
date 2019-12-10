@@ -25,7 +25,8 @@ pub fn (program mut Program) run() {
 			val[0..1].int(),
 		]
 
-		match val[3..] {
+		opcode := val[3..]
+		match opcode {
 			'01' {
 				first, second := program.get_two_params(param_modes)
 				program.write(param_modes, 3, first + second)
@@ -104,6 +105,9 @@ pub fn (program mut Program) run() {
 				} else {
 					program.result = program.outputs.last()
 				}
+				return
+			} else {
+				println('Invalid opcode: $opcode')
 				return
 			}
 		}
