@@ -117,40 +117,50 @@ pub fn (program mut Program) run() {
 fn (program mut Program) write(param_modes []int, param_offset int, value i64) {
 	idx := match param_modes[param_offset - 1] {
 		2 {
-			program.relative_base + program.memory[program.pos + param_offset]
+			program.relative_base + program.get(program.pos + param_offset)
 		} else {
-			program.memory[program.pos + param_offset]
+			program.get(program.pos + param_offset)
 		}
 	}
 
-	for idx >= i64(program.memory.len) {
-		program.memory << i64(0)
-	}
-
+	program.ensure_capacity(idx)
 	program.memory[idx] = value
 }
 
-fn (program &Program) get_param(param_modes []int) i64 {
-	return program.get_param_with_offset(param_modes, 0)
-}
-
-fn (program &Program) get_param_with_offset(param_modes []int, offset int) i64 {
-	return match param_modes[offset] {
-		1 {
-			program.memory[program.pos + offset + 1]
-		}
-		2 {
-			program.memory[program.relative_base + program.memory[program.pos + offset + 1]]
-		} else {
-			program.memory[program.memory[program.pos + offset + 1]]
-		}
+fn (program mut Program) ensure_capacity(cap i64) {
+	for cap >= i64(program.memory.len) {
+		program.memory << i64(0)
 	}
 }
 
-fn (program &Program) get_two_params(param_modes []int) (i64, i64) {
+fn (program mut Program) get_param(param_modes []int) i64 {
+	return program.get_param_with_offset(param_modes, 0)
+}
+
+fn (program mut Program) get_param_with_offset(param_modes []int, offset int) i64 {
+	idx := match param_modes[offset] {
+		1 {
+			program.pos + offset + 1
+		}
+		2 {
+			program.relative_base + program.get(program.pos + offset + 1)
+		} else {
+			program.get(program.pos + offset + 1)
+		}
+	}
+
+	return program.get(idx)
+}
+
+fn (program mut Program) get(idx i64) i64 {
+	program.ensure_capacity(idx)
+	return program.memory[idx]
+}
+
+fn (program mut Program) get_two_params(param_modes []int) (i64, i64) {
 	return program.get_param(param_modes), program.get_param_with_offset(param_modes, 1)
 }
 
-fn (program &Program) get_three_params(param_modes []int) (i64, i64, i64) {
+fn (program mut Program) get_three_params(param_modes []int) (i64, i64, i64) {
 	return program.get_param(param_modes), program.get_param_with_offset(param_modes, 1), program.get_param_with_offset(param_modes, 2)
 }
