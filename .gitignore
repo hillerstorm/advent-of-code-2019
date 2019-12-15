@@ -331,29 +331,6 @@ ASALocalRun/
 .DS_Store
 
 # compiled stuff
-v/day_01
-v/day_01.exe
-v/day_02
-v/day_02.exe
-v/day_03
-v/day_03.exe
-v/day_04
-v/day_04.exe
-v/day_05
-v/day_05.exe
-v/day_06
-v/day_06.exe
-v/day_07
-v/day_07.exe
-v/day_08
-v/day_08.exe
-v/day_09
-v/day_09.exe
-v/day_10
-v/day_10.exe
-v/day_11
-v/day_11.exe
-v/day_12
-v/day_12.exe
-v/day_13
-v/day_13.exe
+v/*.txt
+v/day_??
+v/day_??.exe
