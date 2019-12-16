@@ -2,6 +2,7 @@ module helpers
 
 import (
 	math
+	os
 )
 
 pub struct Vec2 {
@@ -54,4 +55,27 @@ pub fn permutations(values []int) [][]int {
 	}
 
 	return res
+}
+
+pub fn read_file(path string) ?string {
+	file := os.read_file(path) or {
+		return error(err)
+	}
+	return file.trim_space()
+}
+
+pub fn abs(i int) int {
+	return int(math.abs(i))
+}
+
+pub fn join(arr []int) int {
+	return arr.reduce(combine, 0)
+}
+
+pub fn combine(acc, i int) int {
+	mut pow := 10
+	for i >= pow {
+		pow *= 10
+	}
+	return acc * pow + i
 }

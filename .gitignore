@@ -334,3 +334,4 @@ ASALocalRun/
 v/*.txt
 v/day_??
 v/day_??.exe
+v/.vrepl_temp*
