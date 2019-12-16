@@ -10,7 +10,7 @@ fn main() {
 	}
 
 	for line in input {
-		split := line.trim_space().split(')')
+		split := line.split(')')
 		orbits[split[1]] = split[0]
 	}
 

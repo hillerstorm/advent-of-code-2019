@@ -1,5 +1,5 @@
 import (
-	os
+	helpers
 )
 
 const (
@@ -9,8 +9,7 @@ const (
 )
 
 fn main() {
-	input := os.read_file('../inputs/20191208.txt')?
-	pixels := input.trim_space()
+	pixels := helpers.read_file('../inputs/20191208.txt')?
 
 	num_layers := pixels.len / image_pixels
 	mut layers := []string

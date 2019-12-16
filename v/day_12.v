@@ -1,6 +1,7 @@
 import (
 	os
 	math
+	helpers
 )
 
 struct Moon {
@@ -99,16 +100,15 @@ fn (m mut Moon) apply_velocity() {
 fn (m []Moon) calculate_energy() int {
 	mut sum := 0
 	for moon in m {
-		pot_energy := math.abs(moon.x) + math.abs(moon.y) + math.abs(moon.z)
-		kin_energy := math.abs(moon.vel_x) + math.abs(moon.vel_y) + math.abs(moon.vel_z)
-		sum += int(pot_energy * kin_energy)
+		pot_energy := helpers.abs(moon.x) + helpers.abs(moon.y) + helpers.abs(moon.z)
+		kin_energy := helpers.abs(moon.vel_x) + helpers.abs(moon.vel_y) + helpers.abs(moon.vel_z)
+		sum += pot_energy * kin_energy
 	}
 	return sum
 }
 
 fn parse_moon(line string) Moon {
-	parts := line.trim_space().replace('<x=', '').replace(' y=', '').replace(' z=', '').replace('>', '').split(',')
-	nums := parts.map(it.int())
+	nums := helpers.split_to_ints(line.replace('<x=', '').replace(' y=', '').replace(' z=', '').replace('>', ''), ',')
 	return &Moon {
 		x: nums[0]
 		y: nums[1]

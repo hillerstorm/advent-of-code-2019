@@ -1,6 +1,6 @@
 import (
 	os
-	math
+	helpers
 )
 
 const (
@@ -55,7 +55,7 @@ fn get_coords(path []string) map[string]Data {
 			y += y_inc
 			key := '${x},$y'
 			if !key in coords {
-				coords[key] = Data{step + i + 1, int(math.abs(x) + math.abs(y))}
+				coords[key] = Data{step + i + 1, helpers.abs(x) + helpers.abs(y)}
 			}
 		}
 		step += steps

@@ -19,7 +19,7 @@ fn main() {
 }
 
 fn fuel_req(mass int) (int, int) {
-	req := int(math.floor(mass / 3) - 2)
+	req := mass / 3 - 2
 	if req <= 0 {
 		return req, 0
 	}
