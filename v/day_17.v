@@ -1,7 +1,6 @@
 import (
 	helpers
 	intcode
-	os
 	strings
 )
 
@@ -116,6 +115,6 @@ fn try_coord(grid []string, res []helpers.Vec2, width, height, x, y int) []helpe
 		mut r := &res
 		r << &helpers.vec2(x, y)
 	}
-	
+
 	return res
 }
