@@ -35,14 +35,14 @@ pub fn split_to_i64s(input string, separator string) []i64 {
 	return ints
 }
 
-pub fn permutations(values []int) [][]int {
+pub fn permutations<T>(values []T) [][]T {
 	if values.len == 0 {
 		return [values]
 	}
 
-  // Weird way of initializing two-dimensional array, [] doesn't work
+	// Weird way of initializing two-dimensional array, [][]T doesn't work
 	// Have to force type by adding an empty array and then removing
-	mut res := [[]int]
+	mut res := [[]T]
 	res.delete(0)
 	for current in values {
 		others := values.filter(it != current)
@@ -64,8 +64,8 @@ pub fn read_file(path string) ?string {
 	return file.trim_space()
 }
 
-pub fn abs(i int) int {
-	return int(math.abs(i))
+pub fn abs<T>(i T) T {
+	return T(math.abs(f64(i)))
 }
 
 pub fn join(arr []int) int {
