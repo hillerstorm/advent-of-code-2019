@@ -19,40 +19,45 @@ fn run(input []i64, settings []int) i64 {
 
 	for p in helpers.permutations(settings) {
 		perm := p.map(i64(it))
+
+		vm1_inputs := [perm[0], 0]
+		vm1_outputs := [perm[1]]
 		mut vm1 := &intcode.Program {
 			memory: input.clone()
-			input_source: &intcode.Program{outputs:[perm[0], 0]}
-			outputs: [perm[1]]
+			inputs: &vm1_inputs
+			outputs: &vm1_outputs
 		}
 		vm1.run()
 
+		vm2_outputs := [perm[2]]
 		mut vm2 := &intcode.Program {
 			memory: input.clone()
-			input_source: vm1
-			outputs: [perm[2]]
+			inputs: &vm1_outputs
+			outputs: &vm2_outputs
 		}
 		vm2.run()
 
+		vm3_outputs := [perm[3]]
 		mut vm3 := &intcode.Program {
 			memory: input.clone()
-			input_source: vm2
-			outputs: [perm[3]]
+			inputs: &vm2_outputs
+			outputs: &vm3_outputs
 		}
 		vm3.run()
 
+		vm4_outputs := [perm[4]]
 		mut vm4 := &intcode.Program {
 			memory: input.clone()
-			input_source: vm3
-			outputs: [perm[4]]
+			inputs: &vm3_outputs
+			outputs: &vm4_outputs
 		}
 		vm4.run()
 
 		mut vm5 := &intcode.Program {
 			memory: input.clone()
-			input_source: vm4
-			outputs: vm1.input_source.outputs
+			inputs: &vm4_outputs
+			outputs: &vm1_inputs
 		}
-		vm1.input_source = vm5
 		vm5.run()
 
 		for !vm5.done {

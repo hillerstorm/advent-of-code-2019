@@ -5,9 +5,9 @@ pub mut:
 	memory []i64
 	done bool = false
 	result i64 = i64(0)
-	outputs []i64 = []i64
+	outputs voidptr
 	input_idx int = 0
-	input_source &Program
+	inputs voidptr
 	pos i64 = i64(0)
 	relative_base i64 = i64(0)
 }
@@ -40,17 +40,19 @@ pub fn (program mut Program) run() {
 				program.pos += 4
 			}
 			'03' {
-				if program.input_idx >= program.input_source.outputs.len {
+				inputs := *(*array_i64(program.inputs))
+				if program.input_idx >= inputs.len {
 					return
 				}
 
-				program.write(param_modes, 1, program.input_source.outputs[program.input_idx++])
+				program.write(param_modes, 1, inputs[program.input_idx++])
 
 				program.pos += 2
 			}
 			'04' {
 				param := program.get_param(param_modes)
-				program.outputs << param
+				mut outputs := *array_i64(program.outputs)
+				outputs << *i64(param)
 
 				program.pos += 2
 			}
@@ -100,10 +102,11 @@ pub fn (program mut Program) run() {
 			}
 			'99' {
 				program.done = true
-				if program.outputs.len == 0 {
+				outputs := *(*array_i64(program.outputs))
+				if outputs.len == 0 {
 					program.result = program.memory[0]
 				} else {
-					program.result = program.outputs.last()
+					program.result = outputs.last()
 				}
 				return
 			} else {

@@ -13,8 +13,12 @@ fn main() {
 			parsed[1] = noun
 			parsed[2] = verb
 
+			inputs := []i64
+			outputs := []i64
 			mut vm := &intcode.Program {
 				memory: parsed.clone()
+				inputs: &inputs
+				outputs: &outputs
 			}
 			vm.run()
 

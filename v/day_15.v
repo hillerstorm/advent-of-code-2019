@@ -41,15 +41,17 @@ fn traverse(memory []i64, grid mut []int, x, y, steps int, pos i64) (int, int) {
 			continue
 		}
 
+		inputs := [i64(i + 1)]
+		outputs := []i64
 		mut vm := &intcode.Program {
 			memory: memory.clone()
-			input_source: &intcode.Program{outputs: []}
+			inputs: &inputs
+			outputs: &outputs
 			pos: pos
 		}
-		vm.input_source.outputs << i64(i + 1)
 		vm.run()
 
-		result := vm.outputs[vm.outputs.len - 1]
+		result := outputs[outputs.len - 1]
 
 		if result == 0 {
 			grid[idx] = -1

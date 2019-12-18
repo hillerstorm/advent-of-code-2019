@@ -51,22 +51,23 @@ fn run(width, height int, memory []i64, start_value i64) ([]i64, int) {
 
 	grid[x + width * y] = start_value
 
-	input_source := &intcode.Program{outputs: []}
-	mut vm1 := &intcode.Program {
+	mut inputs := []i64
+	outputs := []i64
+	mut vm := &intcode.Program {
 		memory: memory,
-		input_source: input_source
+		inputs: &inputs
+		outputs: &outputs
 	}
 	mut dir := direction.up
 	mut output_idx := 0
 	mut visited := []int
 	for {
 		idx := x + width * y
-		mut arr := &input_source.outputs
-		arr << grid[idx]
+		inputs << grid[idx]
 
-		vm1.run()
+		vm.run()
 
-		if vm1.done {
+		if vm.done {
 			break
 		}
 
@@ -74,9 +75,9 @@ fn run(width, height int, memory []i64, start_value i64) ([]i64, int) {
 			visited << idx
 		}
 
-		grid[idx] = vm1.outputs[output_idx]
+		grid[idx] = outputs[output_idx]
 		// Can't map[tuple]xx so screw it, ugly match instead of lookup
-		if vm1.outputs[output_idx + 1] == 0 {
+		if outputs[output_idx + 1] == 0 {
 			// turn left
 			match	dir {
 				.up {
