@@ -41,9 +41,7 @@ pub fn permutations<T>(values []T) [][]T {
 	}
 
 	// Weird way of initializing two-dimensional array, [][]T doesn't work
-	// Have to force type by adding an empty array and then removing
-	mut res := [[]T]
-	res.delete(0)
+	mut res := []array_T
 	for current in values {
 		others := values.filter(it != current)
 		for perm in permutations(others) {
