@@ -17,8 +17,10 @@ fn main() {
 	input := os.read_lines('../inputs/20191222.txt')?
 	instructions := parse_instructions(input)
 
-	part1 := get_part_1(10007, 2019, instructions)
+	part1 := get_part_1(119315717514047, 2020, instructions)
 	println('part 1: $part1')
+	reverse := get_part_2(119315717514047, part1, instructions)
+	println('part 2: $reverse')
 }
 
 fn get_part_1(deck_len, start_idx i64, instructions []Instruction) i64 {
@@ -41,6 +43,40 @@ fn get_part_1(deck_len, start_idx i64, instructions []Instruction) i64 {
 			else {}
 		}
 	}
+
+	return idx
+}
+
+fn get_part_2(deck_len, end_idx i64, instructions []Instruction) i64 {
+	mut idx := end_idx
+
+	// for i := i64(0); i < 101741582076661; i++ {
+		for j := instructions.len - 1; j >= 0; j-- {
+			instruction := instructions[j]
+			match instruction.typ {
+				.deal {
+					idx = deck_len - idx - 1
+				}
+				.increment {
+					mut k := 0
+					for {
+						val := (deck_len * k++) + idx
+						if val % instruction.value == 0 {
+							idx = val / instruction.value
+							break
+						}
+					}
+				}
+				.cut {
+					idx = (idx + instruction.value) % deck_len
+					if idx < 0 {
+						idx = deck_len + idx
+					}
+				}
+				else {}
+			}
+		}
+	// }
 
 	return idx
 }
