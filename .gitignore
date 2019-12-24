@@ -330,8 +330,11 @@ ASALocalRun/
 .mfractor/
 .DS_Store
 
+.vscode/
+
 # compiled stuff
 v/*.txt
 v/day_??
 v/*.exe
+v/*.c
 .vrepl*
