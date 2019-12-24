@@ -10,18 +10,23 @@ pub enum typ {
 	open
 }
 
-pub struct Point {
+pub struct D20Point {
 pub:
 	x int
 	y int
+	z int = 0
+	dz int = 0
 	typ typ
+pub mut:
+	is_start bool = false
+	is_goal bool = false
 }
 
-pub fn (p Point) str() string {
-	return '{$p.x, $p.y}'
+pub fn (p D20Point) str() string {
+	return '{$p.x,$p.y,$p.z}'
 }
 
-pub fn (ps []Point) str() string {
+pub fn (ps []D20Point) str() string {
 	str := ps.map(it.str())
 	return str.join(', ')
 }
@@ -101,11 +106,11 @@ pub fn (ps []D18Point) str() string {
 	return str.join(', ')
 }
 
-pub type NodeValue = Point | D18Point
+pub type NodeValue = D20Point | D18Point
 
 pub fn (v NodeValue) str() string {
 	match v {
-		Point {
+		D20Point {
 			return it.str()
 		}
 		D18Point {
