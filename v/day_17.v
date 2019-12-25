@@ -15,26 +15,22 @@ fn main() {
 		'L,10,R,10,R,6,L,4\n' +
 		'n\n'
 	).bytes()
-	moves_i64 := movements.map(i64(it))
 
-	parsed[0] = i64(2)
-	outputs := []i64
-	mut vm := &intcode.Program {
-		memory: parsed.clone()
-		inputs: &moves_i64
-		outputs: &outputs
+	parsed[0] = 2
+	mut vm := intcode.new_program(parsed.clone())
+	for movement in movements {
+		vm.input(i64(movement))
 	}
 	vm.run()
 
 	mut grid := []string
 	mut height := -1
 	mut out_idx := 0
-	for out_idx < outputs.len {
-		val := outputs[out_idx]
-		out_idx++
+	for out_idx < vm.outputs.len {
+		val := vm.outputs[out_idx++]
 		match val {
 			10 {
-				if outputs[out_idx - 2] == 10 {
+				if vm.outputs[out_idx - 2] == 10 {
 					break
 				} else {
 					height++
@@ -50,15 +46,14 @@ fn main() {
 	mut part2 := i64(0)
 	mut builder := strings.new_builder(50)
 	defer { builder.free() }
-	for out_idx < outputs.len {
-		val := outputs[out_idx]
+	for out_idx < vm.outputs.len {
+		val := vm.outputs[out_idx++]
 		if val > 255 {
 			part2 = val
 			break
 		} else {
 			builder.write_b(byte(val))
 		}
-		out_idx++
 	}
 
 	mut sum := 0
@@ -84,7 +79,7 @@ fn main() {
 	}
 
 	println('part 1: $sum')
-	if vm.done && outputs[outputs.len - 1] != 10 {
+	if vm.done && vm.outputs[vm.outputs.len - 1] != 10 {
 		println('part 2: $part2')
 	} else {
 		println(builder.str())

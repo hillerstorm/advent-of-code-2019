@@ -13,12 +13,13 @@ fn main() {
 			part1 += get_state(x, y, &parsed)
 		}
 	}
+	println('part 1: $part1')
 
 	mut part2 := 0
 	mut x_start := 0
-	for y := 0; y < 700; y++ {
+	for y := 600; y < 700; y++ {
 		mut prev_was_active := false
-		for x := x_start; x < 1500; x++ {
+		for x := 1400; x < 1500; x++ {
 			top_left := get_state(x, y, &parsed) == 1
 			if top_left && !prev_was_active {
 				x_start = x - 1
@@ -38,19 +39,13 @@ fn main() {
 			}
 		}
 	}
-
-	println('part 1: $part1')
 	println('part 2: $part2')
 }
 
 fn get_state(x, y int, memory []i64) i64 {
-	inputs := [i64(x), i64(y)]
-	outputs := []i64
-	mut vm := &intcode.Program {
-		memory: memory.clone()
-		inputs: &inputs
-		outputs: &outputs
-	}
+	mut vm := intcode.new_program(memory.clone())
+	vm.input(x)
+	vm.input(y)
 	vm.run()
 
 	return vm.result

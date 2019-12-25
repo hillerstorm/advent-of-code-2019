@@ -16,15 +16,14 @@ fn main() {
 	parsed := helpers.split_to_i64s(input, ',')
 
 	_, visited := run(500, 500, parsed.clone(), 0)
+	println('part 1: $visited')
 
 	width := 81
 	height := 11
 
 	grid, _ := run(width, height, parsed.clone(), 1)
 
-	println('part 1: $visited')
 	println('part 2:')
-
 	for row := 0; row < height; row++ {
 		slice := grid[width * row..width * row + width]
 		ones := slice.filter(it == 1)
@@ -51,19 +50,13 @@ fn run(width, height int, memory []i64, start_value i64) ([]i64, int) {
 
 	grid[x + width * y] = start_value
 
-	mut inputs := []i64
-	outputs := []i64
-	mut vm := &intcode.Program {
-		memory: memory,
-		inputs: &inputs
-		outputs: &outputs
-	}
+	mut vm := intcode.new_program(memory)
 	mut dir := direction.up
 	mut output_idx := 0
 	mut visited := []int
 	for {
 		idx := x + width * y
-		inputs << grid[idx]
+		vm.input(grid[idx])
 
 		vm.run()
 
@@ -75,9 +68,9 @@ fn run(width, height int, memory []i64, start_value i64) ([]i64, int) {
 			visited << idx
 		}
 
-		grid[idx] = outputs[output_idx]
+		grid[idx] = vm.outputs[output_idx++]
 		// Can't map[tuple]xx so screw it, ugly match instead of lookup
-		if outputs[output_idx + 1] == 0 {
+		if vm.outputs[output_idx++] == 0 {
 			// turn left
 			match	dir {
 				.up {
@@ -120,8 +113,6 @@ fn run(width, height int, memory []i64, start_value i64) ([]i64, int) {
 				else {}
 			}
 		}
-
-		output_idx += 2
 	}
 
 	return grid, visited.len

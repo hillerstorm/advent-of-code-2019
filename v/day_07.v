@@ -10,6 +10,7 @@ fn main() {
 
 	part1 := run(parsed, [0, 1, 2, 3, 4])
 	println('part 1: $part1')
+
 	part2 := run(parsed, [5, 6, 7, 8, 9])
 	println('part 2: $part2')
 }
@@ -17,55 +18,49 @@ fn main() {
 fn run(input []i64, settings []int) i64 {
 	mut max := i64(0)
 
-	for p in helpers.permutations(settings) {
-		perm := p.map(i64(it))
+	for perm in helpers.permutations(settings) {
+		mut vm1 := intcode.new_program(input.clone())
+		mut vm1_out_idx := 0
+		vm1.input(perm[0])
+		vm1.input(0)
 
-		vm1_inputs := [perm[0], 0]
-		vm1_outputs := [perm[1]]
-		mut vm1 := &intcode.Program {
-			memory: input.clone()
-			inputs: &vm1_inputs
-			outputs: &vm1_outputs
-		}
-		vm1.run()
+		mut vm2 := intcode.new_program(input.clone())
+		mut vm2_out_idx := 0
+		vm2.input(perm[1])
 
-		vm2_outputs := [perm[2]]
-		mut vm2 := &intcode.Program {
-			memory: input.clone()
-			inputs: &vm1_outputs
-			outputs: &vm2_outputs
-		}
-		vm2.run()
+		mut vm3 := intcode.new_program(input.clone())
+		mut vm3_out_idx := 0
+		vm3.input(perm[2])
 
-		vm3_outputs := [perm[3]]
-		mut vm3 := &intcode.Program {
-			memory: input.clone()
-			inputs: &vm2_outputs
-			outputs: &vm3_outputs
-		}
-		vm3.run()
+		mut vm4 := intcode.new_program(input.clone())
+		mut vm4_out_idx := 0
+		vm4.input(perm[3])
 
-		vm4_outputs := [perm[4]]
-		mut vm4 := &intcode.Program {
-			memory: input.clone()
-			inputs: &vm3_outputs
-			outputs: &vm4_outputs
-		}
-		vm4.run()
-
-		mut vm5 := &intcode.Program {
-			memory: input.clone()
-			inputs: &vm4_outputs
-			outputs: &vm1_inputs
-		}
-		vm5.run()
+		mut vm5 := intcode.new_program(input.clone())
+		mut vm5_out_idx := 0
+		vm5.input(perm[4])
 
 		for !vm5.done {
 			vm1.run()
+			for vm1_out_idx < vm1.outputs.len {
+				vm2.input(vm1.outputs[vm1_out_idx++])
+			}
 			vm2.run()
+			for vm2_out_idx < vm2.outputs.len {
+				vm3.input(vm2.outputs[vm2_out_idx++])
+			}
 			vm3.run()
+			for vm3_out_idx < vm3.outputs.len {
+				vm4.input(vm3.outputs[vm3_out_idx++])
+			}
 			vm4.run()
+			for vm4_out_idx < vm4.outputs.len {
+				vm5.input(vm4.outputs[vm4_out_idx++])
+			}
 			vm5.run()
+			for vm5_out_idx < vm5.outputs.len {
+				vm1.input(vm5.outputs[vm5_out_idx++])
+			}
 		}
 
 		if vm5.result > max {

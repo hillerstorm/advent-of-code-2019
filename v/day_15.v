@@ -21,11 +21,10 @@ fn main() {
 
 	x, y := traverse(parsed.clone(), mut grid, start_x, start_y, 0, i64(0))
 	print_grid(grid, start_x, start_y, x, y)
-
 	station_distance := grid[x + width * y]
-	time := fill_grid(mut grid, x, y)
-
 	println('part 1: $station_distance')
+
+	time := fill_grid(mut grid, x, y)
 	println('part 2: $time')
 }
 
@@ -41,17 +40,12 @@ fn traverse(memory []i64, grid mut []int, x, y, steps int, pos i64) (int, int) {
 			continue
 		}
 
-		inputs := [i64(i + 1)]
-		outputs := []i64
-		mut vm := &intcode.Program {
-			memory: memory.clone()
-			inputs: &inputs
-			outputs: &outputs
-			pos: pos
-		}
+		mut vm := intcode.new_program(memory.clone())
+		vm.pos = pos
+		vm.input(i + 1)
 		vm.run()
 
-		result := outputs[outputs.len - 1]
+		result := vm.outputs[vm.outputs.len - 1]
 
 		if result == 0 {
 			grid[idx] = -1

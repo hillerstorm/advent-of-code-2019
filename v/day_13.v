@@ -23,27 +23,20 @@ fn main() {
 	mut parsed := helpers.split_to_i64s(input, ',')
 
 	part1 := part_one(parsed.clone())
+	println('part 1: $part1')
 
 	parsed[0] = 2
 	part2 := part_two(parsed, print)
-
-	println('part 1: $part1')
 	println('part 2: $part2')
 }
 
 fn part_one(memory []i64) int {
-	inputs := []i64
-	outputs := []i64
-	mut vm := &intcode.Program {
-		memory: memory
-		inputs: &inputs
-		outputs: &outputs
-	}
+	mut vm := intcode.new_program(memory)
 	vm.run()
 
 	mut blocks := 0
-	for i := 0; i < outputs.len; i += 3 {
-		if outputs[i + 2] == 2 {
+	for i := 0; i < vm.outputs.len; i += 3 {
+		if vm.outputs[i + 2] == 2 {
 			blocks++
 		}
 	}
@@ -54,13 +47,7 @@ fn part_one(memory []i64) int {
 fn part_two(memory []i64, print bool) i64 {
 	mut grid := [' '].repeat(width * height)
 
-	mut inputs := []i64
-	outputs := []i64
-	mut vm := &intcode.Program {
-		memory: memory
-		inputs: &inputs
-		outputs: &outputs
-	}
+	mut vm := intcode.new_program(memory)
 
 	mut paddle_pos := 0
 	mut ball_pos := 0
@@ -70,11 +57,11 @@ fn part_two(memory []i64, print bool) i64 {
 	for !vm.done {
 		vm.run()
 
-		for output_idx < outputs.len {
-			x := int(outputs[output_idx])
-			y := int(outputs[output_idx + 1])
-			value := outputs[output_idx + 2]
-			output_idx += 3
+		for output_idx < vm.outputs.len {
+			x := int(vm.outputs[output_idx++])
+			y := int(vm.outputs[output_idx++])
+			value := vm.outputs[output_idx++]
+
 			if x == -1 && y == 0 {
 				score = value
 				continue
@@ -91,7 +78,7 @@ fn part_two(memory []i64, print bool) i64 {
 			}
 		}
 
-		inputs << i64(if ball_pos < paddle_pos {
+		vm.input(if ball_pos < paddle_pos {
 			-1
 		} else if ball_pos > paddle_pos {
 			1
