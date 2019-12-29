@@ -5,6 +5,123 @@ import (
 	os
 )
 
+pub enum typ {
+	wall
+	open
+}
+
+pub struct Point {
+pub:
+	x int
+	y int
+	typ typ
+}
+
+pub fn (p Point) str() string {
+	return '{$p.x, $p.y}'
+}
+
+pub fn (ps []Point) str() string {
+	str := ps.map(it.str())
+	return str.join(', ')
+}
+
+pub struct Wall {
+	// fix for empty structs in sum types...
+	foo int = 0
+}
+
+pub fn (w Wall) str() string {
+	return 'Wall'
+}
+
+pub struct Open {
+	// fix for empty structs in sum types...
+	foo int = 0
+}
+
+pub fn (o Open) str() string {
+	return 'Open'
+}
+
+pub struct Key {
+pub:
+	name string
+}
+
+pub fn (k Key) str() string {
+	return 'Key($k.name)'
+}
+
+pub struct Door {
+pub:
+	name string
+}
+
+pub fn (d Door) str() string {
+	return 'Door($d.name)'
+}
+
+pub type D18Typ = Wall | Open | Key | Door
+
+pub fn (t D18Typ) str() string {
+	match t {
+		Wall {
+			return it.str()
+		}
+		Open {
+			return it.str()
+		}
+		Key {
+			return it.str()
+		}
+		Door {
+			return it.str()
+		}
+		else {
+			return 'Unknown'
+		}
+	}
+}
+
+pub struct D18Point {
+pub:
+	x int
+	y int
+	typ D18Typ
+	keys []string = []string
+}
+
+pub fn (p D18Point) str() string {
+	return '{$p.x,$p.y,$p.keys}'
+}
+
+pub fn (ps []D18Point) str() string {
+	str := ps.map(it.str())
+	return str.join(', ')
+}
+
+pub type NodeValue = Point | D18Point
+
+pub fn (v NodeValue) str() string {
+	match v {
+		Point {
+			return it.str()
+		}
+		D18Point {
+			return it.str()
+		}
+		else {
+			return 'Unknown value'
+		}
+	}
+}
+
+pub fn (vs []NodeValue) str() string {
+	str := vs.map(it.str())
+	return str.join(', ')
+}
+
 pub struct Vec2 {
 pub:
 	x int
