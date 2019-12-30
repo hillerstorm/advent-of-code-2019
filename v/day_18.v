@@ -98,7 +98,6 @@ fn get_path_len(start helpers.D18Point, grid []helpers.D18Point, all_keys []stri
 	queue.enqueue(start, 0.0)
 	mut visited := map[string]helpers.NodeValue
 	visited[start.str()] = start
-	mut shortest_path := grid.len * grid.len
 
 	for queue.count() > 0 {
 		curr := get_point(queue.dequeue()) or {
@@ -106,12 +105,7 @@ fn get_path_len(start helpers.D18Point, grid []helpers.D18Point, all_keys []stri
 		}
 
 		if curr.keys.eq(all_keys) {
-			path := pathfinder.generate_path(start, curr, visited)
-			println('$start -> $curr = ${path.len - 1}')
-			if path.len - 1 < shortest_path {
-				shortest_path = path.len - 1
-			}
-			continue
+			return pathfinder.generate_path(start, curr, visited).len - 1
 		}
 
 		neighbors := get_neighbors(curr, grid, all_keys, width)
@@ -142,7 +136,7 @@ fn get_path_len(start helpers.D18Point, grid []helpers.D18Point, all_keys []stri
 		}
 	}
 
-	return shortest_path
+	return -1
 }
 
 fn setup_grid(input []string, width, height int) (helpers.D18Point, []helpers.D18Point, map[string]helpers.D18Point) {
