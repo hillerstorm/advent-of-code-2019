@@ -33,7 +33,6 @@ fn main() {
 		}
 
 		mut curr := orbits[orb]
-		mut indirect := 0
 		for curr != '' {
 			if is_you {
 				you << curr
@@ -41,11 +40,9 @@ fn main() {
 				san << curr
 			}
 
-			indirect++
+			sum_indirect++
 			curr = orbits[curr]
 		}
-
-		sum_indirect += indirect
 	}
 
 	println('part 1: ${sum_direct + sum_indirect}')

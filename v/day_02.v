@@ -13,13 +13,7 @@ fn main() {
 			parsed[1] = noun
 			parsed[2] = verb
 
-			inputs := []i64
-			outputs := []i64
-			mut vm := &intcode.Program {
-				memory: parsed.clone()
-				inputs: &inputs
-				outputs: &outputs
-			}
+			mut vm := intcode.new_program(parsed.clone())
 			vm.run()
 
 			if noun == 12 && verb == 2 {
